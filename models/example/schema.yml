@@ -1,0 +1,22 @@
+
+#version: 2
+#
+#models:
+#  - name: toolbelt_company_model
+#    description: "toolbelt_company_model"
+#    columns:
+#      - name: id
+#        description: "The primary key for this table"
+#        tests:
+#          - unique
+#          - not_null
+
+version: 2
+
+sources:
+  - name: postgres
+    description: 'mmc testing'
+    database: postgres
+    schema: mmc_staging
+    tables:
+      - name: toolbelt_company
