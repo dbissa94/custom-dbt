@@ -1,6 +1,6 @@
 
-#version: 2
-#
+version: 2
+
 models:
   - name: toolbelt_company_model
     description: "toolbelt_company_model"
