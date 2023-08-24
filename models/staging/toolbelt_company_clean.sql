@@ -27,7 +27,7 @@ SELECT
     pro_id,
     contact_id,
     company_name,
-    company_address_delivery_line_1,
+    regexp_replace(company_address_delivery_line_1, '[^a-zA-Z0-9 ]', '', 'g') AS company_address_delivery_line_1,
     regexp_replace(company_address_delivery_line_2, '[^a-zA-Z0-9 ]', '', 'g') AS company_address_delivery_line_2,
 --     lower(company_address_delivery_line_2) AS company_address_delivery_line_2,
     company_address_city AS company_address_city,
