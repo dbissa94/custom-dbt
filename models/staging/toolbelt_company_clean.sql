@@ -11,13 +11,13 @@
 --
 {{ config(materialized='table') }}
 
+-- with source_data as (
+--
+--     select * from {{source('postgres','toolbelt_company')}}),
+--
+-- final as (select * from source_data)
+
 with source_data as (
-
-    select * from {{source('postgres','toolbelt_company')}}),
-
-final as (select * from source_data)
-
-
 SELECT
     id AS id,
     batch_id,
@@ -28,7 +28,8 @@ SELECT
     contact_id,
     company_name,
     company_address_delivery_line_1,
-    lower(company_address_delivery_line_2) AS company_address_delivery_line_2,
+    regexp_replace(company_address_delivery_line_2, '[^a-zA-Z0-9 ]', '', 'g') AS company_address_delivery_line_2,
+--     lower(company_address_delivery_line_2) AS company_address_delivery_line_2,
     company_address_city AS company_address_city,
     company_address_postal_code AS company_address_postal_code,
     company_address_postal_code_plus_4 AS company_address_postal_code_plus_4,
@@ -73,7 +74,10 @@ SELECT
     contact_name_professional_suffix AS contact_name_professional_suffix,
     contact_name_maturity_suffix AS contact_name_maturity_suffix,
     contact_title,
-    trim(contact_phone, '+') as contact_phone,
+    CASE
+        WHEN contact_phone ~ '^\+' THEN contact_phone
+        ELSE CONCAT('+', contact_phone)
+    END AS contact_phone,
     contact_phone_direct,
     contact_email,
     contact_email_direct,
@@ -82,4 +86,8 @@ SELECT
     contact_source_last_touch,
     contact_class_primary,
     contact_class_secondary
-from {{source('postgres','toolbelt_company')}} where company_address_delivery_line_2 is not Null
+from {{source('postgres','toolbelt_company')}}),
+
+final as (select * from source_data)
+
+select * from final
