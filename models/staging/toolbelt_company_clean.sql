@@ -73,7 +73,7 @@ SELECT
     contact_name_professional_suffix AS contact_name_professional_suffix,
     contact_name_maturity_suffix AS contact_name_maturity_suffix,
     contact_title,
-    trim(contact_phone, '+') as contact_phone
+    trim(contact_phone, '+') as contact_phone,
     contact_phone_direct,
     contact_email,
     contact_email_direct,
