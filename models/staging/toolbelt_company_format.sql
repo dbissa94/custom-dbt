@@ -1,25 +1,16 @@
-
-/*
-    Welcome to your first dbt model!
-    Did you know that you can also configure models directly within SQL files?
-    This will override configurations stated in dbt_project.yml
-
-    Try changing table to view below
-*/
-
-
---
+-- models/my_model.sql
 {{ config(materialized='table') }}
 
--- with source_data as (
---
---     select * from {{source('postgres','toolbelt_company')}}),
---
--- final as (select * from source_data)
-
 with source_data as (
-SELECT
-    id AS id,
+    SELECT * from {{ ref('toolbelt_company_clean') }}
+),
+final as (
+    select * from source_data
+),
+
+updated_data AS (
+    select
+        id AS id,
     batch_id,
     rn,
     org_id,
@@ -27,8 +18,8 @@ SELECT
     pro_id,
     contact_id,
     company_name,
-    regexp_replace(company_address_delivery_line_1, '[^a-zA-Z0-9 ]', '', 'g') AS company_address_delivery_line_1,
-    regexp_replace(company_address_delivery_line_2, '[^a-zA-Z0-9 ]', '', 'g') AS company_address_delivery_line_2,
+    company_address_delivery_line_1,
+    company_address_delivery_line_2,
 --     lower(company_address_delivery_line_2) AS company_address_delivery_line_2,
     company_address_city AS company_address_city,
     company_address_postal_code AS company_address_postal_code,
@@ -74,7 +65,6 @@ SELECT
     contact_name_professional_suffix AS contact_name_professional_suffix,
     contact_name_maturity_suffix AS contact_name_maturity_suffix,
     contact_title,
-    contact_phone,
     contact_phone_direct,
     contact_email,
     contact_email_direct,
@@ -82,9 +72,12 @@ SELECT
     contact_source_cnt,
     contact_source_last_touch,
     contact_class_primary,
-    contact_class_secondary
-from {{source('postgres','toolbelt_company')}}),
+    contact_class_secondary,
+        CASE
+            WHEN contact_phone ~ '^\+' THEN contact_phone
+            ELSE CONCAT('+', contact_phone)
+        END AS contact_phone
+    from final
+)
 
-final as (select * from source_data)
-
-select * from final
+SELECT * FROM updated_data
