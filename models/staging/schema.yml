@@ -18,3 +18,4 @@ sources:
     schema: mmc_staging
     tables:
       - name: toolbelt_company
+      - name: toolbelt_golden_record
