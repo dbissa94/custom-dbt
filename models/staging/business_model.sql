@@ -1,4 +1,3 @@
-
 /*
     Welcome to your first dbt model!
     Did you know that you can also configure models directly within SQL files?
@@ -18,9 +17,10 @@
 -- final as (select * from source_data)
 
 with source_data as (
-SELECT id,batch_id,company_name,org_id,company_address_delivery_line_1,company_address_delivery_line_2,contact_phone
+SELECT id,batch_id,company_name,org_id,company_address_delivery_line_1,company_address_delivery_line_2,contact_phone,ml_score
 from {{source('postgres','toolbelt_golden_record')}}),
 
 final as (select * from source_data)
 
-select * from final
+select *
+from final
