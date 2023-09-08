@@ -54,7 +54,10 @@ updated_data AS (
     company_loc_cbsa_code AS company_loc_cbsa_code,
     company_website,
     company_email,
-    company_phone AS company_phone,
+    CASE
+            WHEN company_phone ~ '^\+' THEN company_phone
+            ELSE CONCAT('+', company_phone)
+        END AS company_phone,
     company_cs,
     company_source_cnt,
     company_source_last_touch,
@@ -65,7 +68,10 @@ updated_data AS (
     contact_name_professional_suffix AS contact_name_professional_suffix,
     contact_name_maturity_suffix AS contact_name_maturity_suffix,
     contact_title,
-    contact_phone_direct,
+    CASE
+            WHEN contact_phone_direct ~ '^\+' THEN contact_phone_direct
+            ELSE CONCAT('+', contact_phone_direct)
+        END AS contact_phone_direct,
     contact_email,
     contact_email_direct,
     contact_cs,
@@ -73,11 +79,9 @@ updated_data AS (
     contact_source_last_touch,
     contact_class_primary,
     contact_class_secondary,
-        CASE
-            WHEN contact_phone ~ '^\+' THEN contact_phone
-            ELSE CONCAT('+', contact_phone)
-        END AS contact_phone
+    contact_phone as contact_phone
     from final
 )
 
-SELECT * FROM updated_data
+SELECT *
+FROM updated_data
